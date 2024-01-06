@@ -1,0 +1,23 @@
+FROM golang:1.21 AS build
+VOLUME ["/root/.cache/go-build","/go/pkg/mod"]
+WORKDIR /src
+COPY . /src
+RUN --mount=type=cache,target=/root/.cache/go-build --mount=type=cache,target=/go/pkg/mod <<EOT
+set -x -e
+if [ ! -d vendor ]; then
+    go mod tidy
+fi
+go build -o /out/main .
+EOT
+
+FROM golang:1.21 AS dev
+LABEL io.acorn.acornfile.fragment="CWRpcnM6IHsKCQkiL3Jvb3QvLmNhY2hlL2dvLWJ1aWxkIjogInZvbHVtZTovL2dvLWNhY2hlLVwoc2VydmljZU5hbWUpP3N1YlBhdGg9Z28tYnVpbGQiCgkJIi9nby9wa2cvbW9kIjogInZvbHVtZTovL2dvLWNhY2hlLVwoc2VydmljZU5hbWUpP3N1YlBhdGg9bW9kIgoJCSIvc3JjIjogIi4vIgoJfQoJYnVpbGQ6IHdhdGNoRmlsZXM6IFsKCQkiXChidWlsZC5jb250ZXh0KS9nby5tb2QiLAoJCSJcKGJ1aWxkLmNvbnRleHQpL2dvLnN1bSIsCgld"
+WORKDIR /src
+COPY . /src
+ENTRYPOINT ["go","run","github.com/ibuildthecloud/conair@a416839b20fee1d3a6da4dab24e785644a75a76c"]
+
+FROM cgr.dev/chainguard/wolfi-base AS default
+WORKDIR /tmp
+COPY --from=build /out/main /bin/
+USER 10000
+ENTRYPOINT ["main"]

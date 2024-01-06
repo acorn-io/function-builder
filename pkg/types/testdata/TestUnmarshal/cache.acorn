@@ -1,0 +1,26 @@
+targets: all: {
+	run: [
+		{
+			cmd: "hi"
+			mount: cache: "/foo"
+		},
+		{
+			cmd: "hi"
+			mount: [
+				{
+					cache: {
+						target: "/foo"
+					}
+				},
+			]
+		},
+		{
+			cmd: "hi"
+			mount: [
+				{
+					cache: "/foo"
+				},
+			]
+		},
+	]
+}

@@ -1,0 +1,76 @@
+let baseImage: "golang:1.21"
+let runtimeImage: "cgr.dev/chainguard/wolfi-base"
+
+args: {
+	buildPackages: [string] || default ["."]
+}
+
+localFiles: {
+	"go.mod": """
+module local
+
+go 1.21.5
+"""
+}
+
+detect: [{
+	files: ["go.mod"]
+	priority: 100
+}, {
+	files: ["*.go"]
+	priority: 50
+}]
+
+targets: dev: {
+	from: baseImage
+	acornfile: """
+		dirs: {
+			"/root/.cache/go-build": "volume://go-cache-\\(serviceName)?subPath=go-build"
+			"/go/pkg/mod": "volume://go-cache-\\(serviceName)?subPath=mod"
+			"/src": "./"
+		}
+		build: watchFiles: [
+			"\\(build.context)/go.mod",
+			"\\(build.context)/go.sum",
+		]
+	"""
+
+	entrypoint: ["go", "run", "github.com/ibuildthecloud/conair@a416839b20fee1d3a6da4dab24e785644a75a76c"]
+	run: [
+		{copy: dest: "/src"},
+	]
+}
+
+targets: build: {
+	from: baseImage
+	cacheVolumes: [
+		"/root/.cache/go-build",
+		"/go/pkg/mod",
+	]
+	run: [
+		{copy: dest: "/src"},
+		"""
+        set -x -e
+        if [ ! -d vendor ]; then
+            go mod tidy
+        fi
+        go build -o /out/main \(std.join(args.buildPackages, " "))
+        """,
+	]
+}
+
+targets: default: {
+	from:       runtimeImage
+	workdir:    "/tmp"
+	entrypoint: "main"
+	user:       10000
+	run: [
+		{
+			copy: {
+				from:   "build"
+				source: "/out/main"
+				dest:   "/bin/"
+			}
+		},
+	]
+}

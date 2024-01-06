@@ -1,0 +1,56 @@
+let types: {
+	Build: {
+		from:        "scratch"
+		shell?:      string || [string]
+		stopSignal?: string
+		entrypoint:  string || [string]
+		workdir:     "/src"
+		acornfile?:  string
+		run?:        string || [Instruction]
+		user?:       int
+		cacheVolumes: [string]
+	}
+
+	Instruction: string || Run || Copy || Volume || Workdir
+
+	Mount: CacheMount
+
+	CacheMount: {
+		cache: string || {
+			target: string
+		}
+	}
+
+	Volume: {
+		volume: string
+	}
+
+	Workdir: {
+		workdir: string
+	}
+
+	Run: {
+		command: string
+		mount?:  Mount || [Mount]
+	}
+
+	Copy: {
+		copy: {
+			source: "."
+			dest:   string
+			from?:  string
+			link:   false
+		}
+	}
+}
+
+detect: [{
+	priority?: int
+	files: [string]
+}]
+
+localFiles: string: string
+
+targets: {
+	string: types.Build
+}

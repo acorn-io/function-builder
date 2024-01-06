@@ -1,0 +1,11 @@
+targets: dev: {
+	from:       "required"
+	shell: "/bin/sh"
+	entrypoint: `echo "one two" three`
+	workdir: "wd"
+	volumes: ["foo"]
+	stopSignal: "stop"
+	run: [{
+		cmd: "hi"
+	}]
+}
