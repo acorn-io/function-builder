@@ -179,6 +179,10 @@ func (b *Build) toDockerfile(key string, w *wrappedWriter) error {
 		w.Write(fmt.Sprintf("WORKDIR %s\n", b.Workdir))
 	}
 
+	for _, env := range b.Env {
+		w.Write(fmt.Sprintf("ENV %s\n", env))
+	}
+
 	for _, v := range b.Run {
 		if err := v.toDockerfile(w, b.CacheVolumes); err != nil {
 			return err
@@ -213,7 +217,7 @@ func (i *Instruction) toDockerfile(w *wrappedWriter, cacheVolumes []string) erro
 		w.Write(i.Run.Command)
 		w.Write("\nEOT\n")
 	}
-	if i.Copy.Dest != "" {
+	if i.Copy != nil && i.Copy.Dest != "" {
 		w.Write("COPY ")
 		if i.Copy.Link {
 			w.Write("--link ")

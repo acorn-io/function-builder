@@ -1,0 +1,80 @@
+{
+  "targets": {
+    "build": {
+      "from": "golang:1.21",
+      "cacheVolumes": [
+        "/root/.cache/go-build",
+        "/go/pkg/mod"
+      ],
+      "workdir": "/src",
+      "run": [
+        {
+          "copy": {
+            "source": ".",
+            "dest": "/src"
+          }
+        },
+        {
+          "command": "set -x -e\nif [ ! -d vendor ]; then\n    go mod tidy\nfi\ngo build -o /out/main ."
+        }
+      ]
+    },
+    "default": {
+      "from": "cgr.dev/chainguard/wolfi-base",
+      "entrypoint": [
+        "main"
+      ],
+      "workdir": "/tmp",
+      "user": 10000,
+      "run": [
+        {
+          "copy": {
+            "source": "/out/main",
+            "dest": "/bin/",
+            "from": "build"
+          }
+        }
+      ]
+    },
+    "dev": {
+      "from": "golang:1.21",
+      "cacheVolumes": [
+        "/root/.cache/go-build",
+        "/go/pkg/mod"
+      ],
+      "entrypoint": [
+        "go",
+        "run",
+        "github.com/ibuildthecloud/conair@d6bf8ba"
+      ],
+      "workdir": "/src",
+      "acornfile": "\tdirs: {\n\t\t\"/root/.cache/go-build\": \"volume://go-cache-\\(serviceName)?subPath=go-build\"\n\t\t\"/go/pkg/mod\": \"volume://go-cache-\\(serviceName)?subPath=mod\"\n\t\t\"/src\": \"./\\(build.context)\"\n\t}\n\tbuild: watchFiles: [\n\t\t\"\\(build.context)/go.mod\",\n\t\t\"\\(build.context)/go.sum\",\n\t\t\"\\(build.context)/vendor/modules.txt\",\n\t]",
+      "run": [
+        {
+          "copy": {
+            "source": ".",
+            "dest": "/src"
+          }
+        }
+      ]
+    }
+  },
+  "localFiles": {
+    ".dockerignore": "tmp/",
+    "go.mod": "module local\n\ngo 1.21.5"
+  },
+  "detect": [
+    {
+      "priority": 100,
+      "files": [
+        "go.mod"
+      ]
+    },
+    {
+      "priority": 50,
+      "files": [
+        "*.go"
+      ]
+    }
+  ]
+}

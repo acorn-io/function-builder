@@ -3,6 +3,7 @@ package factory
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io"
 	"io/fs"
 	"os"
@@ -88,7 +89,7 @@ func toPriority(i *int) int {
 	return *i
 }
 
-var ErrNoTemplate = errors.New("failed to analyze source and determine language runtime")
+type ErrNoTemplate error
 
 func Detect(cwd fs.FS) (*types.Template, error) {
 	var (
@@ -118,7 +119,7 @@ func Detect(cwd fs.FS) (*types.Template, error) {
 	})
 
 	if len(matches) == 0 {
-		return nil, ErrNoTemplate
+		return nil, (ErrNoTemplate)(fmt.Errorf("failed to analyze source and determine language runtime in directory: %s", cwd))
 	}
 	result := byName[matches[0].name]
 	return &result, nil

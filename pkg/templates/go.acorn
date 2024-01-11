@@ -6,6 +6,9 @@ args: {
 }
 
 localFiles: {
+	".dockerignore": """
+tmp/
+"""
 	"go.mod": """
 module local
 
@@ -23,19 +26,24 @@ detect: [{
 
 targets: dev: {
 	from: baseImage
+	cacheVolumes: [
+		"/root/.cache/go-build",
+		"/go/pkg/mod",
+	]
 	acornfile: """
 		dirs: {
 			"/root/.cache/go-build": "volume://go-cache-\\(serviceName)?subPath=go-build"
 			"/go/pkg/mod": "volume://go-cache-\\(serviceName)?subPath=mod"
-			"/src": "./"
+			"/src": "./\\(build.context)"
 		}
 		build: watchFiles: [
 			"\\(build.context)/go.mod",
 			"\\(build.context)/go.sum",
+			"\\(build.context)/vendor/modules.txt",
 		]
 	"""
 
-	entrypoint: ["go", "run", "github.com/ibuildthecloud/conair@a416839b20fee1d3a6da4dab24e785644a75a76c"]
+	entrypoint: ["go", "run", "github.com/ibuildthecloud/conair@d6bf8ba"]
 	run: [
 		{copy: dest: "/src"},
 	]

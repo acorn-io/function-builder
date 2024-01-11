@@ -1,0 +1,65 @@
+{
+  "targets": {
+    "default": {
+      "from": "dev",
+      "workdir": "/src",
+      "user": 10000
+    },
+    "dev": {
+      "from": "node:18",
+      "entrypoint": [
+        "nodemon",
+        "index.js"
+      ],
+      "workdir": "/src",
+      "acornfile": "\tdirs: {\n\t\t\"/src\": \"./\\(build.context)\"\n\t}\n\tbuild: watchFiles: [\n\t\t\"\\(build.context)/package.json\",\n\t\t\"\\(build.context)/package-lock.json\",\n\t\t\"\\(build.context)/env-setup.sh\",\n\t]",
+      "run": [
+        {
+          "copy": {
+            "source": "env-setup.sh*",
+            "dest": "/src"
+          }
+        },
+        {
+          "command": "if [ -e env-setup.sh ]; then\n    chmod +x env-setup.sh\n    ENV_SETUP_PHASE=dev ./env-setup.sh\nfi"
+        },
+        {
+          "command": "npm install -g nodemon"
+        },
+        {
+          "copy": {
+            "source": "package.json package-lock.json*",
+            "dest": "/src"
+          }
+        },
+        {
+          "command": "npm install"
+        },
+        {
+          "copy": {
+            "source": ".",
+            "dest": "/src"
+          }
+        }
+      ]
+    }
+  },
+  "localFiles": {
+    ".dockerignore": "node_modules/\n",
+    "package.json": "\n{\n  \"name\": \"function\",\n  \"version\": \"0.0.1\",\n  \"description\": \"\",\n  \"main\": \"index.js\",\n  \"scripts\": {\n  },\n  \"dependencies\": {\n      \"express\": \"^4.18.2\"\n  },\n  \"private\": true\n}\n    "
+  },
+  "detect": [
+    {
+      "priority": 100,
+      "files": [
+        "package.json"
+      ]
+    },
+    {
+      "priority": 50,
+      "files": [
+        "index.js"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+FROM node:18 AS dev
+LABEL io.acorn.acornfile.fragment="CWRpcnM6IHsKCQkiL3NyYyI6ICIuL1woYnVpbGQuY29udGV4dCkiCgl9CglidWlsZDogd2F0Y2hGaWxlczogWwoJCSJcKGJ1aWxkLmNvbnRleHQpL3BhY2thZ2UuanNvbiIsCgkJIlwoYnVpbGQuY29udGV4dCkvcGFja2FnZS1sb2NrLmpzb24iLAoJCSJcKGJ1aWxkLmNvbnRleHQpL2Vudi1zZXR1cC5zaCIsCgld"
+WORKDIR /src
+COPY env-setup.sh* /src
+RUN <<EOT
+if [ -e env-setup.sh ]; then
+    chmod +x env-setup.sh
+    ENV_SETUP_PHASE=dev ./env-setup.sh
+fi
+EOT
+RUN <<EOT
+npm install -g nodemon
+EOT
+COPY package.json package-lock.json* /src
+RUN <<EOT
+npm install
+EOT
+COPY . /src
+ENTRYPOINT ["nodemon","index.js"]
+
+FROM dev AS default
+WORKDIR /src
+USER 10000

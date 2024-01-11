@@ -1,0 +1,43 @@
+{
+  "targets": {
+    "one": {
+      "from": "required",
+      "workdir": "/src",
+      "run": [
+        {
+          "command": "echo hi"
+        }
+      ]
+    },
+    "three": {
+      "from": "required",
+      "workdir": "/src",
+      "run": [
+        {
+          "command": "one"
+        },
+        {
+          "command": "two"
+        },
+        {
+          "command": "three"
+        }
+      ]
+    },
+    "two": {
+      "from": "required",
+      "workdir": "/src",
+      "run": [
+        {
+          "command": "one"
+        },
+        {
+          "command": "two"
+        },
+        {
+          "command": "three"
+        }
+      ]
+    }
+  }
+}

@@ -11,10 +11,11 @@ go build -o /out/main .
 EOT
 
 FROM golang:1.21 AS dev
-LABEL io.acorn.acornfile.fragment="CWRpcnM6IHsKCQkiL3Jvb3QvLmNhY2hlL2dvLWJ1aWxkIjogInZvbHVtZTovL2dvLWNhY2hlLVwoc2VydmljZU5hbWUpP3N1YlBhdGg9Z28tYnVpbGQiCgkJIi9nby9wa2cvbW9kIjogInZvbHVtZTovL2dvLWNhY2hlLVwoc2VydmljZU5hbWUpP3N1YlBhdGg9bW9kIgoJCSIvc3JjIjogIi4vIgoJfQoJYnVpbGQ6IHdhdGNoRmlsZXM6IFsKCQkiXChidWlsZC5jb250ZXh0KS9nby5tb2QiLAoJCSJcKGJ1aWxkLmNvbnRleHQpL2dvLnN1bSIsCgld"
+LABEL io.acorn.acornfile.fragment="CWRpcnM6IHsKCQkiL3Jvb3QvLmNhY2hlL2dvLWJ1aWxkIjogInZvbHVtZTovL2dvLWNhY2hlLVwoc2VydmljZU5hbWUpP3N1YlBhdGg9Z28tYnVpbGQiCgkJIi9nby9wa2cvbW9kIjogInZvbHVtZTovL2dvLWNhY2hlLVwoc2VydmljZU5hbWUpP3N1YlBhdGg9bW9kIgoJCSIvc3JjIjogIi4vXChidWlsZC5jb250ZXh0KSIKCX0KCWJ1aWxkOiB3YXRjaEZpbGVzOiBbCgkJIlwoYnVpbGQuY29udGV4dCkvZ28ubW9kIiwKCQkiXChidWlsZC5jb250ZXh0KS9nby5zdW0iLAoJCSJcKGJ1aWxkLmNvbnRleHQpL3ZlbmRvci9tb2R1bGVzLnR4dCIsCgld"
+VOLUME ["/root/.cache/go-build","/go/pkg/mod"]
 WORKDIR /src
 COPY . /src
-ENTRYPOINT ["go","run","github.com/ibuildthecloud/conair@a416839b20fee1d3a6da4dab24e785644a75a76c"]
+ENTRYPOINT ["go","run","github.com/ibuildthecloud/conair@d6bf8ba"]
 
 FROM cgr.dev/chainguard/wolfi-base AS default
 WORKDIR /tmp

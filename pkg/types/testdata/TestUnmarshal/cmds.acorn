@@ -1,24 +1,24 @@
 targets: one: {
-	from:       "required"
-	run: "echo hi"
+	from: "required"
+	run:  "echo hi"
 }
 
 targets: two: {
-	from:       "required"
+	from: "required"
 	run: [
 		"one",
 		"two",
-		"three"
+		"three",
 	]
 }
 
 targets: three: {
-	from:       "required"
+	from: "required"
 	run: [
 		"one",
 		{
-			cmd: "two",
+			command: "two"
 		},
-		"three"
+		"three",
 	]
 }

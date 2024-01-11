@@ -1,0 +1,40 @@
+{
+  "targets": {
+    "all": {
+      "from": "scratch",
+      "workdir": "/src",
+      "run": [
+        {
+          "command": "hi",
+          "mount": [
+            {
+              "cache": {
+                "target": "/foo"
+              }
+            }
+          ]
+        },
+        {
+          "command": "hi",
+          "mount": [
+            {
+              "cache": {
+                "target": "/foo"
+              }
+            }
+          ]
+        },
+        {
+          "command": "hi",
+          "mount": [
+            {
+              "cache": {
+                "target": "/foo"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

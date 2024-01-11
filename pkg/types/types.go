@@ -46,6 +46,7 @@ type Build struct {
 	Workdir      string       `json:"workdir,omitempty"`
 	Acornfile    string       `json:"acornfile,omitempty"`
 	User         *int         `json:"user,omitempty"`
+	Env          []string     `json:"env,omitempty"`
 	Run          Instructions `json:"run,omitempty"`
 }
 
@@ -112,7 +113,7 @@ type Instruction struct {
 	Run     `json:",inline"`
 	Volume  `json:",inline"`
 	Workdir `json:",inline"`
-	Copy    Copy `json:"copy,omitempty"`
+	Copy    *Copy `json:"copy,omitempty"`
 }
 
 func (i *Instruction) UnmarshalJSON(data []byte) error {

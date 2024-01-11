@@ -1,11 +1,11 @@
 targets: all: {
 	run: [
 		{
-			cmd: "hi"
+			command: "hi"
 			mount: cache: "/foo"
 		},
 		{
-			cmd: "hi"
+			command: "hi"
 			mount: [
 				{
 					cache: {
@@ -15,7 +15,7 @@ targets: all: {
 			]
 		},
 		{
-			cmd: "hi"
+			command: "hi"
 			mount: [
 				{
 					cache: "/foo"

@@ -9,6 +9,7 @@ let types: {
 		run?:        string || [Instruction]
 		user?:       int
 		cacheVolumes: [string]
+		env: [string]
 	}
 
 	Instruction: string || Run || Copy || Volume || Workdir
