@@ -71,7 +71,6 @@ targets: default: {
 	from:       runtimeImage
 	workdir:    "/tmp"
 	entrypoint: "main"
-	user:       10000
 	run: [
 		{
 			copy: {

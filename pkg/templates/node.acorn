@@ -76,5 +76,4 @@ targets: dev: {
 
 targets: default: {
 	from: "dev"
-	user: 10000
 }
